@@ -5,9 +5,10 @@
     <router-link class=" link-1 col-2" to="/">Home</router-link>
     <router-link class=" link-2 col-2" to="/cadastro">Buscar Dados</router-link>
      <router-link class=" link-3 col-2" to="/trazer">Trazer Dados</router-link>
+     
      <div class="col-2"> 
-        <button class="btn btn-primary me-4">Entre</button> 
-        <button class="btn btn-primary">Cadastrar</button>
+        <button class="btn btn-primary me-4"><router-link class=" link-4 col-2" to="/cadastra-usuario">Cadastrar</router-link></button> 
+        <button class="btn btn-primary">Entre</button>
         
      </div>
      
@@ -57,5 +58,14 @@ h1{
      color: black;
      font-family: calibri;
     
+}
+.link-4{
+    text-decoration: none;
+    color: white;
+    font-family: calibri;
+}
+.link-4:hover{
+    color:black;
+    transition: color 0.3s ease;
 }
 </style>

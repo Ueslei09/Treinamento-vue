@@ -32,6 +32,39 @@
       </button>
     </div>
 </main>
+<main class="container">
+<div class="row">
+  <div class="col-md-4">
+    <img src="/imagens/imagem004.jpg" alt="imagem homem em pé" class="imagem004">
+    <figcaption>Figura 1: Homem em pé</figcaption>
+  </div>
+  <div class="col-md-8 text">
+    <p class="mb-4 text-break">Sinto lhe arrancar as asas
+Gostaria de compartilhar
+A dor de tua queda,
+É morte o que vem depois de vida
+E fim o que vem depois de começo.
+
+E a itinerária aliança que nos une
+É o que corrompe meu coração,
+Tragado me sinto no momento
+Que em ti penetro,
+A hemorragia se torna densa.
+
+Confuso fico ao tentar expressar
+Só posso dizer que te amo
+Mas contigo não da para ficar
+
+É obsessivo,
+É obsceno,
+É mórbido,
+É imoral...
+<img src="/imagens/imagem005.jpg" alt="cachorro" class="imagem005">
+<figcaption>Figura 2: Cachorro</figcaption>
+</p>
+  </div>
+</div>
+</main>
 </template>
 <style scoped>
 #myCarousel {
@@ -40,13 +73,31 @@
 
 }
 .carousel-inner{
- margin: 20px;
-  
+  margin-top: 10px;
   display: flex;
   align-items: center;
-  
   height: 100%;
   
+}
+.imagem004{
+ margin-top: 20px;
+ width: 100%;
+}
+.text{
+margin-top: 20px;
+font-family: calibri;
+font-size: 18px;
+
+}
+.imagem005{
+  margin-top: 20px;
+  width: 100%;
+ 
+}
+figcaption{
+  font-size: 9px;
+  margin-top: 5px;
+  font-family: calibri;
 }
 
 </style>

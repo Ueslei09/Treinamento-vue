@@ -3,6 +3,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import TelaPrincipal from '../Views/TelaPrincipal.vue'
 import BuscarDados from '../Views/BuscarDados.vue'
 import TrazerDados from '../Views/TrazerDados.vue'
+import CadastraUsuario from '../Views/CadastraUsuario.vue'
 
 const routes = [
   {
@@ -19,8 +20,13 @@ const routes = [
     path: '/trazer',
     name: 'Trazer Dados',
     component: TrazerDados
+  },
+  {
+    path: '/cadastra-usuario',
+    name: 'Cadastrar Usuário',
+    component: CadastraUsuario
   }
-  
+
 ]
 
 const router = createRouter({
