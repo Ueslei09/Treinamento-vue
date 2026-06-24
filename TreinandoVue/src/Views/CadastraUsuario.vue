@@ -13,12 +13,34 @@
       p-4: espaçamento interno confortável
       text-white: deixa todos os textos internos brancos 
     -->
-    <div class="card w-50 h-50 shadow p-4 text-black custom-card">
+    <div class="card w-50  shadow p-4 text-black custom-card">
         <!-- mb-4: adiciona um espaçamento inferior de 1rem -->
       <h2 class="text-center mb-4">Cadastro</h2>
       
       <!-- O conteúdo do seu formulário entra aqui -->
         <form @submit.prevent="cadastrarUsuario">
+              <!-- Campo Nome -->
+        <div class="mb-3">
+          <label class="form-label">Nome Completo</label>
+          <input type="text" v-model="formulario.NOME" class="form-control" required>
+        </div>
+        <!-- Campo Telefone -->
+        <div class="mb-3">
+          <label class="form-label">Telefone</label>
+          <input type="tel" v-model="formulario.TELEFONE" class="form-control">
+        </div>
+        <!-- Campo Email -->
+        <div class="mb-3">
+          <label class="form-label">E-mail</label>
+          <input type="email" v-model="formulario.EMAIL" class="form-control" required>
+        </div>
+        <!-- Campo Senha -->
+        <div class="mb-3">
+          <label class="form-label">Senha</label>
+          <input type="password" v-model="formulario.SENHA" class="form-control" required>
+        </div>
+         <!-- Botão de envio -->
+        <button type="submit" class="btn btn-primary w-100">Cadastrar</button>
 
         </form>
 
@@ -29,7 +51,7 @@
 <style scoped>
 
  .card{
-  background-color: #c4daf0 !important;
+  background-color: #d0e0ee !important;
  }
 </style>
 <script setup>
@@ -38,10 +60,10 @@ import { ref } from 'vue';
 
 // Cria um objeto reativo chamado "formulario" que contém os campos do formulário
 const formulario = ref({
-  nome: '',
-  telefone: '',
-  email: '',
-  senha: ''    // Mapeia para a nova coluna SENHA
+  NOME: '',
+  TELEFONE: '',
+  EMAIL: '',
+  SENHA: ''    // Mapeia para a nova coluna SENHA
 });
 
 // Função
@@ -49,7 +71,7 @@ const cadastrarUsuario = async () => {
     // Faz uma requisição POST para o endpoint de cadastro, enviando os dados do formulário
 try {
     
-    const resposta = await fetch('http://localhost:3000/api/cadastro', {
+    const resposta = await fetch('http://localhost:3000/cadastro', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(formulario.value)
@@ -57,7 +79,7 @@ try {
     // Verifica se a resposta foi bem-sucedida e exibe uma mensagem apropriada
      if (resposta.ok) {
       alert('Cadastrado com sucesso!');
-      formulario.value = { nome: '', telefone: '', email: '', usuario: '', senha: '' };
+      formulario.value = { NOME: '', TELEFONE: '', EMAIL: '', SENHA: '' };
     }else {
       alert('Erro ao salvar.');
     }
