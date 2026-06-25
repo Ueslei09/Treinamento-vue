@@ -1,8 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
-import TelaPrincipal from '../Views/TelaPrincipal.vue'
-import BuscarDados from '../Views/BuscarDados.vue'
-import TrazerDados from '../Views/TrazerDados.vue'
+import TelaPrincipal from  '../Views/TelaPrincipal.vue'
+import BuscarDados from    '../Views/BuscarDados.vue'
+import TrazerDados from    '../Views/TrazerDados.vue'
 import CadastraUsuario from '../Views/CadastraUsuario.vue'
 
 const routes = [
@@ -22,7 +22,7 @@ const routes = [
     component: TrazerDados
   },
   {
-    path: '/cadastra-usuario',
+    path: '/cadastrar',
     name: 'Cadastrar Usuário',
     component: CadastraUsuario
   }
