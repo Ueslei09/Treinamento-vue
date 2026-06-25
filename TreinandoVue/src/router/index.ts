@@ -15,7 +15,8 @@ const routes = [
   {
     path: '/cadastro',
     name: 'Buscar Dados',
-    component: BuscarDados
+    component: BuscarDados,
+     meta: { requerAutenticacao: true }// Bloqueia o acesso direto sem login
   },
   {
     path: '/trazer',

@@ -35,6 +35,26 @@ export const ApiMeuBanco = {
       console.error('Erro ao efetuar login no banco:', error);
       throw error; // Lança o erro para o componente Vue exibir a mensagem na tela
     }
+  },
+  // 📝 ADICIONE ESTE MÉTODO: Busca os posts do Firebird para mostrar na Home
+  async buscarPosts() {
+    try {
+      const resposta = await axios.get('http://localhost:3000/postagens')
+      return resposta.data
+    } catch (error) {
+      console.error('Erro ao buscar postagens do Firebird:', error)
+      throw error
+    }
+  },
+    // 📝 ADICIONE ESTE MÉTODO: Envia uma nova postagem do Vue para o Node salvar no Firebird
+  async salvarPost(dadosPost) {
+    try {
+      const resposta = await axios.post('http://localhost:3000/postagens', dadosPost)
+      return resposta.data
+    } catch (error) {
+      console.error('Erro ao salvar postagem no Firebird:', error)
+      throw error
+    }
   }
 }
   
