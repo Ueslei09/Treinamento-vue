@@ -7,10 +7,16 @@
      <router-link class=" link-3 col-2" to="/trazer">Trazer Dados</router-link>
      
      <div class="col-2"> 
-        <button class="btn btn-primary me-4"><router-link class=" link-4 col-2" to="/cadastrar">Cadastrar</router-link></button> 
-        <button class="btn btn-primary">Entre</button>
+        <button class="btn btn-primary m-4 "><router-link class=" link-4 col-2" to="/cadastrar">Cadastrar</router-link></button> 
+        <button class="btn btn-primary  "><router-link class=" link-5 col-2" to="/entrar">Entrar</router-link></button>
         
+
+         
      </div>
+     <div class="col-2">
+         <button class="btn btn-primary " @click="realizarLogout">Sair</button>
+     </div>
+   
      
     </header>
      <RouterView/>
@@ -68,4 +74,29 @@ h1{
     color:black;
     transition: color 0.3s ease;
 }
+.link-5{
+    text-decoration: none;
+    color: white;
+    font-family: calibri;
+}
+.link-5:hover{
+    color:black;
+    transition: color 0.3s ease;
+}
 </style>
+<script setup>
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+
+function realizarLogout() {
+  // Apaga o token do disco do navegador
+  localStorage.removeItem('user_token')
+  localStorage.removeItem('dados_usuario') // Se tiver salvo os dados do usuário
+  
+  alert('Você saiu do sistema!')
+  
+  // Manda o usuário de volta para a tela de login
+  router.push('/entrar')
+}
+</script>
