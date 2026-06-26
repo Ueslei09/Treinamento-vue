@@ -65,6 +65,43 @@ Mas contigo não da para ficar
   </div>
 </div>
 </main>
+
+<main class="container mt-5">
+   <h2 class="text-center mb-5 fw-bold text-dark">Feed de Publicações</h2>
+ <!-- Mensagem exibida caso o Firebird esteja sem nenhum post ainda -->
+    <div v-if="posts.length === 0" class="text-center text-muted my-5">
+    <p class="fs-5">Nenhuma publicação encontrada no momento.</p>
+
+    </div>
+
+    <!-- Grid que renderiza os cards do feed -->
+    <div class="row justify-content-center">
+      <!-- O v-for percorre cada item da tabela POSTAGEM trazido pelo Node -->
+      <div v-for="post in posts" :key="post.ID" class="col-md-8 mb-4">
+
+        <div class="card shadow-sm border-0 custom-card">
+
+          <!-- Cabeçalho (Quem postou e a data) -->
+          <div class="card-header bg-white d-flex justify-content-between align-items-center py-3 border-0">
+            <span class="fw-bold text-primary">👤 {{ post.AUTOR_EMAIL }}</span>
+            <small class="text-muted fw-semibold">{{ post.DATA_POST }}</small>
+          </div>
+          <!-- Imagem cadastrada (Só carrega a tag se houver um link preenchido) -->
+          <img 
+            v-if="post.IMAGEM" 
+            :src="post.IMAGEM" 
+            class="card-img-top img-feed" 
+            alt="Imagem da publicação"
+          >
+          <!-- Corpo do Card com o Texto -->
+          <div class="card-body py-4 bg-light rounded-bottom">
+            <p class="card-text fs-5 text-dark m-0">{{ post.TEXTO }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+</main>
 </template>
 <style scoped>
 #myCarousel {
@@ -101,6 +138,28 @@ figcaption{
 }
 
 </style>
+<script setup>
+
+import { ref, onMounted } from 'vue'
+import { ApiMeuBanco } from '../serviceApi/ApiMeuBanco.js'
+
+// Cria a lista reativa que vai armazenar as postagens do banco
+const posts = ref([])
+
+// O gancho onMounted executa a busca automaticamente assim que a Home abre
+onMounted(async () => {
+ try {
+    // Puxa a lista atualizada de posts da tabela do Firebird
+    posts.value = await ApiMeuBanco.buscarPosts()
+    console.log("Postagens carregadas do Firebird:", posts.value)
+  } catch (error) {
+    console.error('Erro ao renderizar o feed na Home:', error)
+  }
+
+});
+
+
+</script>
   
 
   
