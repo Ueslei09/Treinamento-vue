@@ -21,16 +21,15 @@ export const ApiMeuBanco = {
  // ADICIONE ESTE NOVO MÉTODO PARA O LOGIN:
   async login(EMAIL, SENHA) {
     try {
-       // Faz um GET na rota de clientes filtrando pelo e-mail e senha digitados
-            const resposta = await axios.get(`${api_url_Banco}?email=${EMAIL}&senha=${SENHA}`);
-            
-            // O JSON Server retorna um array. Se encontrar o usuário, o tamanho será maior que 0
-            if (resposta.data.length > 0) {
-                return resposta.data[0]; // Retorna os dados do usuário encontrado
-            } else {
-                // Se o array vier vazio, cria um erro manualmente para avisar que a senha está errada
-                throw new Error('E-mail ou senha incorretos.');
-            }
+        // CORREÇÃO: Filtrando com EMAIL e SENHA em maiúsculas na URL
+        const resposta = await axios.get(`${api_url_Banco}?EMAIL=${EMAIL}&SENHA=${SENHA}`);
+
+            // Verifica se a API encontrou o usuário no Array
+        if (resposta.data && resposta.data.length > 0) {
+            return resposta.data[0]; // Retorna apenas o usuário logado
+        } else {
+            throw new Error('E-mail ou senha incorretos.');
+        }
     } catch (error) {
       console.error('Erro ao efetuar login no banco:', error);
       throw error; // Lança o erro para o componente Vue exibir a mensagem na tela

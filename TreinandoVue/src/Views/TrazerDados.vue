@@ -1,16 +1,17 @@
  
  <template>
  <div class="container">
-  <h1>Teste de Dados</h1>
-   <!-- Mostra um aviso enquanto os dados carregam -->
-    <p v-if="dados.length === 0">Carregando dados...</p>
+ <h1>Meus Dados Cadastrais</h1>
+    <!-- Mostra um aviso caso não encontre o usuário logado -->
+    <p v-if="!usuarioLogado">Nenhum usuário logado ou carregando dados...</p>
+    
     <!-- Lista os clientes na tela de forma dinâmica -->
      <ul v-else class="lista-cliente">
-      <li v-for="clientes in dados" :key="clientes.id">
+      <li >
         <p>
-          <strong>Nome:{{ clientes.NOME}}</strong><br>
-          <strong>Telefone:{{ clientes.TELEFONE }}</strong><br>
-          <strong>Email:{{ clientes.EMAIL }}</strong>
+          <strong>Nome:{{ usuarioLogado.NOME || usuarioLogado.nome}}</strong><br>
+          <strong>Telefone:{{usuarioLogado.TELEFONE || usuarioLogado.telefone }}</strong><br>
+          <strong>Email:{{ usuarioLogado.EMAIL || usuarioLogado.email }}</strong>
         </p>
       </li>
        
@@ -25,13 +26,20 @@
  //import { ApiMEuBanco } from './serviceApi/ApiMeuBanco.js';
  import{ApiMeuBanco} from '../serviceApi/ApiMeuBanco.js';
 
- const dados = ref([]);
+ // Criamos uma variável reativa para guardar um único objeto (e não um array/lista)
+ const usuarioLogado = ref(null);
 
  const buscarDados = async () => {
   try {
-   const response = await ApiMeuBanco.listar();
-   dados.value = response;
-  } catch (error) {
+    // 1. Pega do localStorage o texto salvo no momento do login
+   const dadosSalvos = localStorage.getItem('dados_usuario');
+
+  if (dadosSalvos) {
+    // 2. Converte o texto JSON de volta para um objeto JavaScript
+    usuarioLogado.value = JSON.parse(dadosSalvos);
+   }
+  } 
+   catch (error) {
    console.error('Erro ao buscar dados:', error);
   }
  };

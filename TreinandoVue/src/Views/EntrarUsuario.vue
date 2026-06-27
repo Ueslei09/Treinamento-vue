@@ -66,6 +66,12 @@ async function efetuarLogin() {
     // Se chegou aqui sem cair no catch, as credenciais estão certas no banco!
     
     console.log('Dados recebidos do banco:', dadosUsuario);
+
+// CORREÇÃO: Como o banco devolve um Array, extraímos o primeiro objeto encontrado
+    // Se a resposta já for um objeto direto, o código também aceita perfeitamente
+    const usuarioLogado = Array.isArray(dadosUsuario) ? dadosUsuario[0] : dadosUsuario;
+   if (usuarioLogado) {
+
     // ==========================================
     // 👉 O CÓDIGO ENTRA EXATAMENTE AQUI:
     // ==========================================
@@ -73,19 +79,26 @@ async function efetuarLogin() {
     localStorage.setItem('user_token', 'logado_com_sucesso')
     
     // Opcional: Salva os dados do próprio usuário para usar depois se quiser
-    localStorage.setItem('dados_usuario', JSON.stringify(dadosUsuario))
+    localStorage.setItem('dados_usuario', JSON.stringify(usuarioLogado))
+    // Busca o nome do banco em maiúsculo (NOME) ou minúsculo (nome) para saudar
+      const nomeExibição = usuarioLogado.NOME || usuarioLogado.nome || 'Usuário';
+      alert(`Login realizado com sucesso! Bem-vindo, ${nomeExibição}.`);
     
-    alert('Login realizado com sucesso! Bem-vindo.');
     
-    // 3. Redireciona o usuário logado direto para a tela de Buscar Dados automaticamente
-    router.push('/cadastro') 
+
+    
+   // 4. Redireciona o usuário para a página do Feed/Home
+      router.push('/') 
 }
-catch (erro) {
-        // Se caiu aqui, houve algum erro na requisição ou as credenciais estão erradas
-        alert('Erro ao efetuar login: ' + erro.message);
-        console.error('Erro ao efetuar login:', erro);
-    
-}
+ else {
+      alert('E-mail ou senha incorretos no banco de dados.');
+    }
+  }
+  catch (erro) {
+    alert('Erro ao efetuar login: Credenciais inválidas.');
+    console.error('Erro detalhado no login:', erro);
+  }
+
 };
 
 

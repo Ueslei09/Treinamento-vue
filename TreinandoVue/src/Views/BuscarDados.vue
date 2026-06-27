@@ -67,28 +67,30 @@ const router = useRouter()
 
 async function enviarPublicacao() {
 try {
-// 1. Pega os dados do usuário que ficaram guardados no login
-    const dadosUsuario = JSON.parse(localStorage.getItem('dados_usuario') || '{}')
+// 1. Lê os dados guardados de quem logou de verdade
+    const dadosSalvos = localStorage.getItem('dados_usuario');
+    const usuarioLogado = dadosSalvos ? JSON.parse(dadosSalvos) : null;
 
-    // 2. Monta o objeto exatamente com as colunas que o Firebird e o Node esperam
-    const novaPostagem = {
-      AUTOR_EMAIL: dadosUsuario.EMAIL || 'usuario@teste.com', // E-mail do usuário logado
-      TEXTO: texto.value,
-      IMAGEM: imagem.value || 'https://picsum.photos', // Foto padrão se ficar em branco
-      DATA_POST: new Date().toLocaleDateString('pt-BR') // Data de hoje formatada (DD/MM/AAAA)
-
+    // Limpa o link da imagem para garantir que não envie páginas HTML inteiras por engano
+    // Se por algum motivo não achar ninguém logado, barra na hora
+    if (!usuarioLogado) {
+      alert('Sessão expirada. Faça login novamente!');
+      router.push('/entrar');
+      return;
     }
-    // 3. Envia os dados para a API salvar no banco de dados Firebird
+
+     // 2. Monta o post com as colunas EXATAS do Firebird e o e-mail de quem está logado
+    const novaPostagem = {
+      AUTOR_EMAIL: usuarioLogado.EMAIL, // 100% Automático! Vai o e-mail de quem logou.
+      TEXTO: texto.value,
+      IMAGEM: imagem.value || 'https://picsum.photos',
+      DATA_POST: new Date().toISOString().split('T')[0] // Formato limpo AAAA-MM-DD
+    }
+
     await ApiMeuBanco.salvarPost(novaPostagem)
-
-    alert('Publicação enviada com sucesso para o Firebird!')
-
-      // 4. Redireciona o usuário de volta para a Home para ver o feed atualizado
-    router.push('/')
-
-
-
-
+    
+    alert('Publicação enviada com sucesso!')
+    router.push('/') // Manda para a Home
 }
 
  catch (error) {

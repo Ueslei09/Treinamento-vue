@@ -59,9 +59,13 @@ Mas contigo não da para ficar
 É obsceno,
 É mórbido,
 É imoral...
-<img src="/imagens/imagem005.jpg" alt="cachorro" class="imagem005">
-<figcaption>Figura 2: Cachorro</figcaption>
 </p>
+ <!-- CORREÇÃO: A imagem e a legenda ficam dentro de <figure> fora do <p> -->
+  <figure class="mt-3">
+    <img src="/imagens/imagem005.jpg" alt="cachorro" class="imagem005">
+    <figcaption>Figura 2: Cachorro</figcaption>
+  </figure>
+
   </div>
 </div>
 </main>
@@ -75,7 +79,7 @@ Mas contigo não da para ficar
     </div>
 
     <!-- Grid que renderiza os cards do feed -->
-    <div class="row justify-content-center">
+    <div class="row justify-content-center" v-else>
       <!-- O v-for percorre cada item da tabela POSTAGEM trazido pelo Node -->
       <div v-for="post in posts" :key="post.ID" class="col-md-8 mb-4">
 
@@ -89,9 +93,9 @@ Mas contigo não da para ficar
           <!-- Imagem cadastrada (Só carrega a tag se houver um link preenchido) -->
           <img 
             v-if="post.IMAGEM" 
-            :src="post.IMAGEM" 
-            class="card-img-top img-feed" 
-            alt="Imagem da publicação"
+           :src="post.IMAGEM" 
+          class="card-img-top img-feed-retrato" 
+           alt="Imagem da publicação"
           >
           <!-- Corpo do Card com o Texto -->
           <div class="card-body py-4 bg-light rounded-bottom">
@@ -135,6 +139,30 @@ figcaption{
   font-size: 9px;
   margin-top: 5px;
   font-family: calibri;
+}
+/* 📐 REGRA 1: CLÁSSICA / QUADRADA (1080px x 1080px) -> Proporção 1:1 */
+.img-feed-classica {
+  width: 100%;
+  aspect-ratio: 1 / 1; /* Força a proporção quadrada perfeita */
+  object-fit: cover;   /* Centraliza e preenche o espaço sem amassar a foto */
+}
+
+/* 📐 REGRA 2: RETRATO / VERTICAL (1080px x 1350px) -> Proporção 4:5 */
+.img-feed-retrato {
+  width: 100%;
+  aspect-ratio: 4 / 5; /* Padrão vertical do Instagram */
+  object-fit: cover;
+}
+
+/* 📐 REGRA 3: PAISAGEM / HORIZONTAL (1080px x 566px / 538px) -> Proporção ~1.91:1 */
+.img-feed-paisagem {
+  width: 100%;
+  aspect-ratio: 1080 / 538; /* Força exatamente a proporção horizontal desejada */
+  object-fit: cover;
+}
+
+.card-body {
+  background-color: #f8f9fa; 
 }
 
 </style>
