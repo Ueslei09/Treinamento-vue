@@ -87,6 +87,118 @@ export const ApiMeuBanco = {
       throw error
     }
 
+  },
+   /* ========================================
+     MÉTODOS DO CARRINHO
+     ======================================== */
+
+  /* 
+    Busca todos os itens do carrinho do usuário logado
+    email = e-mail do usuário para filtrar no banco
+  */
+
+     async buscarCarrinho(email) {
+
+      try {
+
+         const resposta = await axios.get(`http://localhost:3000/carrinho/${email}`)
+      return resposta.data
+
+      }catch (error) {
+      console.error('Erro ao buscar carrinho:', error)
+      throw error
+    }
+
+
+     },
+     /* 
+    Adiciona um produto ao carrinho
+    Se o produto já existir, o servidor soma a quantidade automaticamente
+  */
+
+     async atualizarQuantidade(id, QUANTIDADE, USUARIO_EMAIL) {
+
+      try {
+
+          const resposta = await axios.put(`http://localhost:3000/carrinho/${id}`, {
+              QUANTIDADE,     /* Nova quantidade */
+        USUARIO_EMAIL   /* E-mail do usuário para o log do CRM */
+
+          });
+           return resposta.data
+
+      }catch (error) {
+      console.error('Erro ao atualizar quantidade:', error)
+      throw error
+    }
+     },
+
+      /* 
+    Remove um item do carrinho
+    id = ID do item no carrinho
+  */
+
+     async removerDoCarrinho(id, USUARIO_EMAIL, PRODUTO_ID) {
+
+        try {
+            const resposta = await axios.delete(`http://localhost:3000/carrinho/${id}`, {
+
+                data: { USUARIO_EMAIL, PRODUTO_ID } /* axios.delete envia body dentro de 'data' */
+
+            });
+             return resposta.data
+
+        } catch (error) {
+      console.error('Erro ao remover do carrinho:', error)
+      throw error
+    }
+
+     },
+
+     /* ========================================
+     MÉTODOS DO PEDIDO
+     ======================================== */
+
+  /*  Finaliza a compra enviando todos os itens selecionados
+    USUARIO_EMAIL = quem está comprando
+    ITENS = array de produtos selecionados no carrinho
+    VALOR_TOTAL = soma de todos os itens
+  */
+
+     async finalizarPedido(USUARIO_EMAIL, ITENS, VALOR_TOTAL) {
+
+      try {
+          const resposta = await axios.post('http://localhost:3000/pedido', {
+
+            USUARIO_EMAIL,
+            ITENS,        /* Ex: [{PRODUTO_ID: 1, NOME: 'Foto', VALOR: 50, QUANTIDADE: 2}] */
+             VALOR_TOTAL
+          });
+          return resposta.data
+
+      }catch (error) {
+      console.error('Erro ao finalizar pedido:', error)
+      throw error
+    }
+
+     },
+
+     /* ========================================
+     MÉTODOS DO CRM
+     ======================================== */
+
+  /* 
+    Busca todos os logs do CRM para a tela de análise
+    de vendas perdidas e comportamento dos clientes
+  */
+  async buscarLogsCRM() {
+    try {
+      const resposta = await axios.get('http://localhost:3000/crm')
+      return resposta.data
+    } catch (error) {
+      console.error('Erro ao buscar logs CRM:', error)
+      throw error
+    }
   }
 
 }
