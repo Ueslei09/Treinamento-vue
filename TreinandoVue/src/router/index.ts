@@ -5,6 +5,7 @@ import BuscarDados from    '../Views/BuscarDados.vue'
 import TrazerDados from    '../Views/TrazerDados.vue'
 import CadastraUsuario from '../Views/CadastraUsuario.vue'
 import EntrarUsuario from '../Views/EntrarUsuario.vue'
+import PublicarProdutos from '../Views/PublicarProdutos.vue'
 
 const routes = [
   {
@@ -34,6 +35,13 @@ const routes = [
     name: 'Entrar Usuário',
     component: EntrarUsuario
   },
+  {
+   path: '/publicar-produto',
+  name: 'Publicar Produtos',
+  component: PublicarProdutos,
+  meta: { requerAutenticacao: true } // Só usuário logado pode publicar
+
+  }
 
 ]
 

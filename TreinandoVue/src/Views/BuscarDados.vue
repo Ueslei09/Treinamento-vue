@@ -63,6 +63,7 @@ import { ApiMeuBanco } from '../serviceApi/ApiMeuBanco.js'
 
 const texto = ref('')
 const imagem = ref('')
+
 const router = useRouter()
 
 async function enviarPublicacao() {

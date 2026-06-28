@@ -54,6 +54,40 @@ export const ApiMeuBanco = {
       console.error('Erro ao salvar postagem no Firebird:', error)
       throw error
     }
+  },
+
+  // ✅ NOVO: Busca todos os produtos cadastrados para exibir na loja
+  async buscarProdutos() {
+    try {
+      const resposta = await axios.get('http://localhost:3000/produtos')
+      return resposta.data
+    } catch (error) {
+      console.error('Erro ao buscar produtos:', error)
+      throw error
+    }
+
+
+  },
+// ✅ NOVO: Envia o formulário com imagem para cadastrar um produto no banco
+  // formData = objeto FormData que contém texto + arquivo de imagem juntos
+  async salvarProduto(formData) {
+   try {
+     const resposta = await axios.post('http://localhost:3000/produtos', formData, {
+     // Deixa o axios detectar automaticamente o Content-Type como multipart/form-data
+        // Necessário para o Multer no servidor conseguir ler o arquivo enviado
+        headers: { 'Content-Type': 'multipart/form-data' }
+
+     })
+     return resposta.data
+   
+
+
+   }catch (error) {
+      console.error('Erro ao salvar produto:', error)
+      throw error
+    }
+
   }
+
 }
   

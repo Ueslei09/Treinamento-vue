@@ -1,5 +1,6 @@
 <template>
-   <main class="container-fluid">
+  <div>
+   <div class="container-fluid">
     <div id="myCarousel" class="carousel slide carousel-dark" data-bs-ride="carousel">
       <!-- Indicadores Corrigidos (Bootstrap 5 usa botões) -->
       <div class="carousel-indicators">
@@ -31,13 +32,13 @@
         <span class="visually-hidden">Próximo</span>
       </button>
     </div>
-</main>
-<main class="container">
+  </div>
+<div class="container animar">
 <div class="row">
-  <div class="col-md-4">
+  <figure class="col-md-4">
     <img src="/imagens/imagem004.jpg" alt="imagem homem em pé" class="imagem004">
     <figcaption>Figura 1: Homem em pé</figcaption>
-  </div>
+  </figure>
   <div class="col-md-8 text">
     <p class="mb-4 text-break">Sinto lhe arrancar as asas
 Gostaria de compartilhar
@@ -68,10 +69,11 @@ Mas contigo não da para ficar
 
   </div>
 </div>
-</main>
+</div>
 
-<main class="container mt-5">
+<div class="container mt-5 animar">
    <h2 class="text-center mb-5 fw-bold text-dark">Feed de Publicações</h2>
+
  <!-- Mensagem exibida caso o Firebird esteja sem nenhum post ainda -->
     <div v-if="posts.length === 0" class="text-center text-muted my-5">
     <p class="fs-5">Nenhuma publicação encontrada no momento.</p>
@@ -105,9 +107,70 @@ Mas contigo não da para ficar
       </div>
     </div>
 
-</main>
+  </div>
+   <!-- Seção principal da loja com espaçamento vertical (my-5) -->
+  <div class="container mt-5 mb-5 animar">
+     <!-- Título centralizado da seção -->
+      <h2 class="text-center fw-bold mb-5">Produtos à Venda</h2>
+
+ <!-- Mensagem se não houver produtos cadastrados -->
+  <div v-if="produtos.length === 0" class="text-center text-muted my-5">
+    <p class="fs-5">Nenhum produto cadastrado ainda.</p>
+  </div>
+  <!-- Grid com os cards dos produtos -->
+  <div class="row g-4" v-else>
+
+     <!-- Percorre cada produto retornado pelo banco -->
+    <div v-for="produto in produtos" :key="produto.ID" class="col-md-3 animar">
+
+    <div class="card h-100 shadow-sm border-0">
+       <!-- 
+          Imagem do produto salva no servidor
+          :src monta a URL completa: http://localhost:3000 + /uploads/arquivo.jpg
+        -->
+        <img
+          v-if="produto.IMAGEM"
+          :src="`http://localhost:3000${produto.IMAGEM}`"
+          class="card-img-top img-produto"
+          alt="Imagem do produto"
+        >
+         <div class="card-body d-flex flex-column">
+
+           <!-- Nome do produto -->
+          <h5 class="card-title fw-bold">{{ produto.NOME }}</h5>
+
+          <!-- Descrição do produto -->
+          <p class="card-text text-muted small">{{ produto.DESCRICAO }}</p>
+           <!-- Preço e botão de comprar -->
+          <div class="mt-auto d-flex justify-content-between align-items-center">
+
+             <span class="fw-bold text-success fs-5">
+              R$ {{ Number(produto.VALOR).toFixed(2) }}
+            </span>
+            <!-- Quantidade disponível -->
+            <small class="text-muted">Qtd: {{ produto.QUANTIDADE }}</small>
+            <button class="btn btn-dark btn-sm">Comprar</button>
+          </div>
+
+         </div>
+
+
+
+
+    </div>
+
+
+    </div>
+
+
+  </div>
+
+  </div>
+  </div>
 </template>
 <style scoped>
+
+
 #myCarousel {
   width: 100%;
   height: 500px; /* Ajuste a altura conforme necessário */
@@ -164,6 +227,36 @@ figcaption{
 .card-body {
   background-color: #f8f9fa; 
 }
+.animar {
+  opacity: 0;
+  transform: scale(0.85);
+  transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+              transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.animar.visivel {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Imagem quadrada que preenche sem distorcer */
+.img-produto {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+}
+
+/* Hover que levanta o card ao passar o mouse */
+.card {
+  border-radius: 12px;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15) !important;
+}
 
 </style>
 <script setup>
@@ -173,18 +266,56 @@ import { ApiMeuBanco } from '../serviceApi/ApiMeuBanco.js'
 
 // Cria a lista reativa que vai armazenar as postagens do banco
 const posts = ref([])
+/* Variável reativa que armazena a lista de produtos do banco */
+const produtos = ref([])
 
 // O gancho onMounted executa a busca automaticamente assim que a Home abre
 onMounted(async () => {
  try {
-    // Puxa a lista atualizada de posts da tabela do Firebird
+     /* Busca as postagens do feed */
     posts.value = await ApiMeuBanco.buscarPosts()
-    console.log("Postagens carregadas do Firebird:", posts.value)
+    console.log('Postagens carregadas:', posts.value)
+
+     /* Busca os produtos da loja */
+    produtos.value = await ApiMeuBanco.buscarProdutos()
+    console.log('Produtos carregados:', produtos.value)
+
+
   } catch (error) {
     console.error('Erro ao renderizar o feed na Home:', error)
   }
 
+  /* 
+    Inicia o observer de scroll DEPOIS de carregar os dados
+    Assim os elementos já existem no DOM quando o observer começa
+  */
+  setTimeout(() => {
+   const observer = new IntersectionObserver((entries) => {
+     entries.forEach(entry => {
+      if (entry.isIntersecting) {
+
+         /* Adiciona a classe que ativa a animação de zoom */
+          entry.target.classList.add('visivel')
+
+           /* Para de observar — anima só uma vez */
+          observer.unobserve(entry.target)
+
+      }
+
+
+     })
+
+   } ,{ threshold: 0.15 })
+    /* Observa todos os elementos com a classe .animar */
+    document.querySelectorAll('.animar').forEach(el => observer.observe(el))
+
+  },300)
+
 });
+
+
+
+
 
 
 </script>

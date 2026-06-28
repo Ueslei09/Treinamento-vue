@@ -1,6 +1,6 @@
  
  <template>
- <div class="container">
+ <main class="container">
  <h1>Meus Dados Cadastrais</h1>
     <!-- Mostra um aviso caso não encontre o usuário logado -->
     <p v-if="!usuarioLogado">Nenhum usuário logado ou carregando dados...</p>
@@ -16,7 +16,7 @@
       </li>
        
      </ul>
- </div>
+    </main>
 
 </template>
 
@@ -43,6 +43,7 @@
    console.error('Erro ao buscar dados:', error);
   }
  };
+ 
   onMounted(() => {
     buscarDados();
   });

@@ -70,7 +70,7 @@ const formulario = ref({
 const cadastrarUsuario = async () => {
     // Faz uma requisição POST para o endpoint de cadastro, enviando os dados do formulário
 try {
-    
+   
     const resposta = await fetch('http://localhost:3000/cadastro', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
