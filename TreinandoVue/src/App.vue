@@ -169,7 +169,7 @@ const route = useRoute()
 const viewWrapper = ref(null)
 
 
-js/* 
+/* 
   watch observa o localStorage continuamente
   Quando o usuário faz login, atualiza o carrinho automaticamente
   sem precisar recarregar a página
@@ -225,9 +225,8 @@ function realizarLogout() {
   localStorage.removeItem('user_token')
   localStorage.removeItem('dados_usuario') // Se tiver salvo os dados do usuário
 
-   /* Zera o contador do carrinho ao deslogar */
+   /* Zera o carrinho ao deslogar */
   carrinhoStore.limparCarrinho()
-  
   
   alert('Você saiu do sistema!')
   

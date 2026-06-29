@@ -94,10 +94,10 @@ Mas contigo não da para ficar
           </div>
           <!-- Imagem cadastrada (Só carrega a tag se houver um link preenchido) -->
           <img 
-            v-if="post.IMAGEM" 
-           :src="post.IMAGEM" 
-          class="card-img-top img-feed-retrato" 
-           alt="Imagem da publicação"
+            v-if="post && post.IMAGEM" 
+            :src="post.IMAGEM.startsWith('/uploads') ? `http://localhost:3000${post.IMAGEM}` : post.IMAGEM" 
+            class="post.IMAGEM.startsWith('/uploads') ? 'card-img-top img-feed-upload' : 'card-img-top img-feed-retrato" 
+             alt="Imagem da publicação"
           >
           <!-- Corpo do Card com o Texto -->
           <div class="card-body py-4 bg-light rounded-bottom">
@@ -129,11 +129,20 @@ Mas contigo não da para ficar
           :src monta a URL completa: http://localhost:3000 + /uploads/arquivo.jpg
         -->
         <img
-          v-if="produto.IMAGEM"
-          :src="`http://localhost:3000${produto.IMAGEM}`"
-          class="card-img-top img-produto"
-          alt="Imagem do produto"
+            v-if="produto && produto.IMAGEM"
+            :src="produto.IMAGEM.startsWith('/uploads') ? `http://localhost:3000${produto.IMAGEM}` : produto.IMAGEM"
+            class="card-img-top img-produto"
+              alt="Imagem do produto"
         >
+            <!-- 
+        Faixa de promoção — só aparece se PROMOCAO = 1
+        position-absolute coloca a faixa sobre a imagem
+      -->
+      <div v-if="produto.PROMOCAO === 1" class="faixa-promocao">
+        🔥 PROMOÇÃO
+      </div>
+
+
          <div class="card-body d-flex flex-column">
 
            <!-- Nome do produto -->
@@ -156,6 +165,29 @@ Mas contigo não da para ficar
                     >
                    🛒 Comprar
                      </button>
+                     <!-- 
+    Botões Editar e Excluir — visíveis SOMENTE para o dono do produto
+    Compara o e-mail do produto com o e-mail do usuário logado
+  -->
+  <div v-if="usuarioLogado && produto.AUTOR_EMAIL === usuarioLogado.EMAIL" class="d-flex gap-1">
+
+    <!-- Botão editar — vai para a rota de edição passando o ID -->
+    <button
+      class="btn btn-warning btn-sm"
+      @click="router.push(`/editar-produto/${produto.ID}`)"
+    >
+      ✏️ Editar
+    </button>
+
+    <!-- Botão excluir — pede confirmação antes -->
+    <button
+      class="btn btn-danger btn-sm"
+      @click="confirmarExclusao(produto)"
+    >
+      🗑 Excluir
+    </button>
+
+  </div>
           </div>
 
          </div>
@@ -263,6 +295,28 @@ figcaption{
   transform: translateY(-6px);
   box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15) !important;
 }
+/* Imagem de upload — se adapta ao tamanho original sem forçar proporção */
+.img-feed-upload{
+  width: 100%;
+  max-height: 500px;
+  object-fit: cover;
+  object-position: center;
+}
+
+/* Faixa vermelha de promoção sobre a imagem do produto */
+.faixa-promocao {
+  position: absolute;   /* Flutua sobre a imagem */
+  top: 12px;            /* Distância do topo */
+  left: 0;              /* Cola na borda esquerda */
+  background-color: #dc3545; /* Vermelho Bootstrap */
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+  padding: 4px 12px;
+  border-radius: 0 8px 8px 0; /* Arredonda só o lado direito */
+  z-index: 10;          /* Fica na frente da imagem */
+  letter-spacing: 1px;
+}
 
 </style>
 <script setup>
@@ -272,7 +326,8 @@ import { ApiMeuBanco } from '../serviceApi/ApiMeuBanco.js'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
-
+/* Pega os dados do usuário logado para verificar quem é o dono */
+const usuarioLogado = ref(null)
 const carrinhoStore = useCarrinhoStore()
 
 // Cria a lista reativa que vai armazenar as postagens do banco
@@ -282,6 +337,12 @@ const produtos = ref([])
 
 // O gancho onMounted executa a busca automaticamente assim que a Home abre
 onMounted(async () => {
+
+  /* Carrega o usuário logado do localStorage */
+  const dadosSalvos = localStorage.getItem('dados_usuario')
+  if (dadosSalvos) {
+    usuarioLogado.value = JSON.parse(dadosSalvos)
+  }
  try {
      /* Busca as postagens do feed */
     posts.value = await ApiMeuBanco.buscarPosts()
@@ -353,6 +414,34 @@ async function adicionarAoCarrinho(produto) {
   } catch (error) {
     console.error('Erro ao adicionar ao carrinho:', error)
     alert('Erro ao adicionar produto ao carrinho.')
+  }
+}
+
+/* 
+  Confirma antes de excluir o produto
+  Mostra um diálogo de confirmação nativo do navegador
+*/
+async function confirmarExclusao(produto) {
+  /* confirm() retorna true se o usuário clicar em OK */
+  const confirmado = confirm(`Tem certeza que deseja excluir "${produto.NOME}"? Esta ação não pode ser desfeita.`)
+
+  if (!confirmado) return /* Se cancelou, não faz nada */
+
+  try {
+    const dadosSalvos = localStorage.getItem('dados_usuario')
+    const usuarioLogado = JSON.parse(dadosSalvos)
+
+    /* Envia a exclusão para o servidor */
+    await ApiMeuBanco.excluirProduto(produto.ID, usuarioLogado.EMAIL)
+
+    /* Remove o produto da lista local sem recarregar a página */
+    produtos.value = produtos.value.filter(p => p.ID !== produto.ID)
+
+    alert('Produto excluído com sucesso!')
+
+  } catch (error) {
+    console.error('Erro ao excluir produto:', error)
+    alert('Erro ao excluir o produto. Você é o dono dele?')
   }
 }
 

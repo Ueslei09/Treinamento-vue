@@ -63,6 +63,19 @@
                 required
               >
             </div>
+            <!-- Campo Promoção — checkbox -->
+<div class="mb-4 form-check">
+  <input
+    type="checkbox"
+    class="form-check-input"
+    id="promocao"
+    v-model="formulario.PROMOCAO"
+  >
+  <!-- Label clicável do checkbox -->
+  <label class="form-check-label fw-bold text-danger" for="promocao">
+    🔥 Marcar como Promoção
+  </label>
+</div>
 
           </div>
           
@@ -152,7 +165,8 @@ const formulario = ref({
   NOME: '',
   DESCRICAO: '',
   VALOR: '',
-  QUANTIDADE: ''
+  QUANTIDADE: '',
+  PROMOCAO: false /* false = sem promoção, true = em promoção */
 })
 
 /* 

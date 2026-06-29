@@ -56,18 +56,64 @@ export const ApiMeuBanco = {
     }
   },
 
-  // ✅ NOVO: Busca todos os produtos cadastrados para exibir na loja
+
+  // ✅ ADICIONE ESTE MÉTODO COMPLETO:
+  /* Busca a lista de todos os produtos cadastrados na loja */
   async buscarProdutos() {
     try {
       const resposta = await axios.get('http://localhost:3000/produtos')
       return resposta.data
     } catch (error) {
-      console.error('Erro ao buscar produtos:', error)
+      console.error('Erro ao buscar lista de produtos:', error)
       throw error
     }
-
-
   },
+
+  // ✅ NOVO: Busca todos os produtos cadastrados para exibir na loja
+ /* Busca um produto específico pelo ID para pré-preencher o formulário */
+async buscarProdutoPorId(id) {
+  try {
+    const resposta = await axios.get(`http://localhost:3000/produtos/${id}`)
+    return resposta.data
+  } catch (error) {
+    console.error('Erro ao buscar produto por ID:', error)
+    throw error
+  }
+},
+
+/* 
+  Edita um produto existente
+  formData = objeto FormData com os dados atualizados + nova imagem (opcional)
+*/
+async editarProduto(id, formData) {
+  try {
+    const resposta = await axios.put(`http://localhost:3000/produtos/${id}`, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    })
+    return resposta.data
+  } catch (error) {
+    console.error('Erro ao editar produto:', error)
+    throw error
+  }
+},
+
+/* 
+  Exclui um produto pelo ID
+  Verifica no servidor se o usuário é o dono antes de excluir
+*/
+async excluirProduto(id, AUTOR_EMAIL) {
+  try {
+    const resposta = await axios.delete(`http://localhost:3000/produtos/${id}`, {
+      /* axios.delete envia o body dentro de 'data' */
+      data: { AUTOR_EMAIL }
+    })
+    return resposta.data
+  } catch (error) {
+    console.error('Erro ao excluir produto:', error)
+    throw error
+  }
+},
+
 // ✅ NOVO: Envia o formulário com imagem para cadastrar um produto no banco
   // formData = objeto FormData que contém texto + arquivo de imagem juntos
   async salvarProduto(formData) {
@@ -218,7 +264,23 @@ async adicionarAoCarrinho(USUARIO_EMAIL, PRODUTO_ID, QUANTIDADE) {
       console.error('Erro ao buscar logs CRM:', error)
       throw error
     }
+  },
+  /* 
+  Salva uma postagem com upload de imagem
+  formData = objeto FormData com texto + arquivo
+*/
+async salvarPostComImagem(formData) {
+  try {
+    const resposta = await axios.post('http://localhost:3000/postagens', formData, {
+      /* Deixa o axios detectar automaticamente como multipart/form-data */
+      headers: { 'Content-Type': 'multipart/form-data' }
+    })
+    return resposta.data
+  } catch (error) {
+    console.error('Erro ao salvar postagem com imagem:', error)
+    throw error
   }
+},
 
 }
   
