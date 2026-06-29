@@ -6,5 +6,9 @@ import router from '@/router'
 // 👇 ADICIONE ESTAS DUAS LINHAS BEM AQUI
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootstrap/dist/js/bootstrap.bundle.min.js'
+import { createPinia } from 'pinia' /* Importa o Pinia */
 
-createApp(App).use(router).mount('#app')
+const app = createApp(App)
+app.use(createPinia()) /* Ativa o Pinia */
+app.use(router)
+app.mount('#app')

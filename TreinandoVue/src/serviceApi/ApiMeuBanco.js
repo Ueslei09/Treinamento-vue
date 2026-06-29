@@ -88,6 +88,25 @@ export const ApiMeuBanco = {
     }
 
   },
+
+
+  /* 
+  Adiciona um produto ao carrinho
+  Se o produto já existir no carrinho, o servidor soma a quantidade automaticamente
+*/
+async adicionarAoCarrinho(USUARIO_EMAIL, PRODUTO_ID, QUANTIDADE) {
+  try {
+    const resposta = await axios.post('http://localhost:3000/carrinho', {
+      USUARIO_EMAIL,  /* E-mail do usuário logado */
+      PRODUTO_ID,     /* ID do produto clicado */
+      QUANTIDADE      /* Quantidade desejada (começa com 1) */
+    })
+    return resposta.data
+  } catch (error) {
+    console.error('Erro ao adicionar ao carrinho:', error)
+    throw error
+  }
+},
    /* ========================================
      MÉTODOS DO CARRINHO
      ======================================== */

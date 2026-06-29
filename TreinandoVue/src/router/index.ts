@@ -6,6 +6,7 @@ import TrazerDados from    '../Views/TrazerDados.vue'
 import CadastraUsuario from '../Views/CadastraUsuario.vue'
 import EntrarUsuario from '../Views/EntrarUsuario.vue'
 import PublicarProdutos from '../Views/PublicarProdutos.vue'
+import CarrinhoProduto from '@/Views/CarrinhoProduto.vue'
 
 const routes = [
   {
@@ -41,7 +42,13 @@ const routes = [
   component: PublicarProdutos,
   meta: { requerAutenticacao: true } // Só usuário logado pode publicar
 
-  }
+  },
+  {
+  path:'/carrinho-produto',
+  name:'Carrinho Produtos',
+  component: CarrinhoProduto,
+  meta:{ reuqerAutenticacao: true} // Só usuário logado pode publicar
+},
 
 ]
 

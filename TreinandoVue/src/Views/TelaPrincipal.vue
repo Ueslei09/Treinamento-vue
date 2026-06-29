@@ -149,7 +149,13 @@ Mas contigo não da para ficar
             </span>
             <!-- Quantidade disponível -->
             <small class="text-muted">Qtd: {{ produto.QUANTIDADE }}</small>
-            <button class="btn btn-dark btn-sm">Comprar</button>
+            <!-- Botão comprar — adiciona ao carrinho e redireciona -->
+              <button
+                  class="btn btn-dark btn-sm"
+                  @click="adicionarAoCarrinho(produto)"
+                    >
+                   🛒 Comprar
+                     </button>
           </div>
 
          </div>
@@ -260,9 +266,14 @@ figcaption{
 
 </style>
 <script setup>
-
+import { useCarrinhoStore } from '../stores/carrinhoStore.js'
 import { ref, onMounted } from 'vue'
 import { ApiMeuBanco } from '../serviceApi/ApiMeuBanco.js'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+
+const carrinhoStore = useCarrinhoStore()
 
 // Cria a lista reativa que vai armazenar as postagens do banco
 const posts = ref([])
@@ -312,6 +323,38 @@ onMounted(async () => {
   },300)
 
 });
+
+
+
+
+/* Adiciona o produto ao carrinho e vai para a tela do carrinho */
+async function adicionarAoCarrinho(produto) {
+  try {
+    const dadosSalvos = localStorage.getItem('dados_usuario')
+    const usuarioLogado = dadosSalvos ? JSON.parse(dadosSalvos) : null
+
+    /* Se não estiver logado, manda para o login */
+    if (!usuarioLogado) {
+      alert('Faça login para comprar!')
+      router.push('/entrar')
+      return
+    }
+
+    /* Adiciona o produto ao carrinho no banco */
+    await ApiMeuBanco.adicionarAoCarrinho(usuarioLogado.EMAIL, produto.ID, 1)
+
+    /* Busca o carrinho atualizado para refletir no ícone */
+    const itensAtualizados = await ApiMeuBanco.buscarCarrinho(usuarioLogado.EMAIL)
+    carrinhoStore.atualizarCarrinho(itensAtualizados)
+
+    /* Redireciona para o carrinho */
+    router.push('/carrinho-produto')
+
+  } catch (error) {
+    console.error('Erro ao adicionar ao carrinho:', error)
+    alert('Erro ao adicionar produto ao carrinho.')
+  }
+}
 
 
 

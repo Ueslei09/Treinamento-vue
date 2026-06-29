@@ -80,6 +80,7 @@ async function efetuarLogin() {
     
     // Opcional: Salva os dados do próprio usuário para usar depois se quiser
     localStorage.setItem('dados_usuario', JSON.stringify(usuarioLogado))
+
     
     // Busca o nome do banco em maiúsculo (NOME) ou minúsculo (nome) para saudar
       const nomeExibição = usuarioLogado.NOME || usuarioLogado.nome || 'Usuário';
