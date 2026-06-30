@@ -48,6 +48,14 @@
     </router-link>
   </button>
 
+ <!-- Link CRM — aparece somente para administradores -->
+<router-link
+  v-if="userStore.isAdmin"
+  class="link-1 col-1"
+  to="/crm"
+>
+  📊 CRM
+</router-link>
 </div>
 </header> 
 <!-- ✅ RouterView com animação blur — estava faltando! -->
@@ -162,33 +170,20 @@ import { ref, watch } from 'vue'
 import { useCarrinhoStore } from './stores/carrinhoStore.js'
 import { onMounted } from 'vue'
 import { ApiMeuBanco } from './serviceApi/ApiMeuBanco.js'
+/* Computed que verifica se o usuário logado é admin */
+import { computed } from 'vue'
+import { useUserStore } from './stores/UserStore.js'
 
 const carrinhoStore = useCarrinhoStore()
 const router = useRouter()
 const route = useRoute()
 const viewWrapper = ref(null)
+const userStore = useUserStore()
 
 
-/* 
-  watch observa o localStorage continuamente
-  Quando o usuário faz login, atualiza o carrinho automaticamente
-  sem precisar recarregar a página
-*/
-watch(() => localStorage.getItem('dados_usuario'), async (novoValor) => {
-  if (novoValor) {
-    /* Usuário acabou de logar — busca o carrinho dele */
-    const usuarioLogado = JSON.parse(novoValor)
-    try {
-      const itens = await ApiMeuBanco.buscarCarrinho(usuarioLogado.EMAIL)
-      carrinhoStore.atualizarCarrinho(itens)
-    } catch (error) {
-      console.error('Erro ao carregar carrinho após login:', error)
-    }
-  } else {
-    /* Usuário deslogou — zera o carrinho */
-    carrinhoStore.limparCarrinho()
-  }
-}, { immediate: true })
+onMounted(() => {
+  userStore.carregarUsuario()
+})
 
 watch(() => route.path, () => {
     const el = viewWrapper.value
@@ -221,16 +216,17 @@ watch(() => route.path, () => {
 })
 
 function realizarLogout() {
-  // Apaga o token do disco do navegador
-  localStorage.removeItem('user_token')
-  localStorage.removeItem('dados_usuario') // Se tiver salvo os dados do usuário
-
-   /* Zera o carrinho ao deslogar */
+  userStore.logout()
   carrinhoStore.limparCarrinho()
-  
-  alert('Você saiu do sistema!')
-  
-  // Manda o usuário de volta para a tela de login
   router.push('/entrar')
 }
+
+const usuarioEAdmin = computed(() => {
+  const dadosSalvos = localStorage.getItem('dados_usuario')
+  if (!dadosSalvos) return false
+  const usuario = JSON.parse(dadosSalvos)
+  return usuario.ADMIN === 1
+})
+
+
 </script>

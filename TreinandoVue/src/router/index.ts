@@ -8,6 +8,9 @@ import EntrarUsuario from '../Views/EntrarUsuario.vue'
 import PublicarProdutos from '../Views/PublicarProdutos.vue'
 import CarrinhoProduto from '@/Views/CarrinhoProduto.vue'
 import EditarProduto from '../Views/EditarProduto.vue'
+/* Importa a View do CRM */
+import PainelCRM from '../Views/PainelCRM.vue'
+
 
 
 
@@ -59,6 +62,13 @@ const routes = [
   component: EditarProduto,
   meta: { requerAutenticacao: true }
 },
+/* Adiciona no array routes */
+{
+  path: '/crm',
+  name: 'Painel CRM',
+  component: PainelCRM,
+  meta: { requerAutenticacao: true } /* Só logado acessa */
+},
 
 ]
 
@@ -66,18 +76,23 @@ const router = createRouter({
   history: createWebHistory(),
   routes
 })
-// 👮 O GUARDA DA ÁRVORE DE ROTAS (Verifica as permissões antes de carregar a tela)
+// ✅ Cola o novo no lugar:
 router.beforeEach((to, from, next) => {
-  // Checa se existe a marcação de login salvo no navegador do usuário
   const usuarioLogado = localStorage.getItem('user_token')
+  const dadosSalvos = localStorage.getItem('dados_usuario')
+  const usuario = dadosSalvos ? JSON.parse(dadosSalvos) : null
 
-  // Se a rota que o usuário quer ir exige autenticação, mas ele NÃO está logado
   if (to.meta.requerAutenticacao && !usuarioLogado) {
-    alert('Acesso negado! Você precisa entrar na sua conta para acessar esta funcionalidade.')
-    next('/entrar') // Redireciona o usuário direto para a tela de Login
-  } else {
-    next() // Se estiver logado ou se for uma rota pública, permite a passagem livre
+    alert('Acesso negado! Você precisa entrar na sua conta.')
+    return next('/entrar')
   }
+
+  if (to.meta.requerAdmin && (!usuario || usuario.ADMIN !== 1)) {
+    alert('Acesso negado! Área restrita para administradores.')
+    return next('/')
+  }
+
+  next()
 })
 
 export default router
