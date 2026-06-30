@@ -171,8 +171,10 @@ import { useCarrinhoStore } from './stores/carrinhoStore.js'
 import { onMounted } from 'vue'
 import { ApiMeuBanco } from './serviceApi/ApiMeuBanco.js'
 /* Computed que verifica se o usuário logado é admin */
-import { computed } from 'vue'
-import { useUserStore } from './stores/UserStore.js'
+import { useUserStore } from './stores/UserStore'
+
+
+
 
 const carrinhoStore = useCarrinhoStore()
 const router = useRouter()
@@ -181,8 +183,12 @@ const viewWrapper = ref(null)
 const userStore = useUserStore()
 
 
-onMounted(() => {
+onMounted(async () => {
   userStore.carregarUsuario()
+
+  if (userStore.usuario) {
+    await carrinhoStore.restaurarCarrinho(userStore.usuario.EMAIL)
+  }
 })
 
 watch(() => route.path, () => {
@@ -221,12 +227,6 @@ function realizarLogout() {
   router.push('/entrar')
 }
 
-const usuarioEAdmin = computed(() => {
-  const dadosSalvos = localStorage.getItem('dados_usuario')
-  if (!dadosSalvos) return false
-  const usuario = JSON.parse(dadosSalvos)
-  return usuario.ADMIN === 1
-})
 
 
 </script>
