@@ -1,6 +1,6 @@
 <template>
   <div>
-   <div class="container-fluid">
+   <div class="container-fluid  p-0 header-full">
     <div id="myCarousel" class="carousel slide carousel-dark" data-bs-ride="carousel">
       <!-- Indicadores Corrigidos (Bootstrap 5 usa botões) -->
       <div class="carousel-indicators">
@@ -33,7 +33,8 @@
       </button>
     </div>
   </div>
-<div class="container animar">
+<div class="container animar"
+>
 <div class="row">
   <figure class="col-md-4">
     <img src="/imagens/imagem004.jpg" alt="imagem homem em pé" class="imagem004">
@@ -208,7 +209,34 @@ Mas contigo não da para ficar
 </template>
 <style scoped>
 
+/* RESET TOTAL DO CAROUSEL */
+.carousel,
+.carousel-inner,
+.carousel-item {
+  width: 100%;
+  margin: 0 !important;
+  padding: 0 !important;
+}
 
+/* FORÇA A IMAGEM A OCUPAR TUDO */
+.carousel-item img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* REMOVE QUALQUER ESPAÇO LATERAL DO BOOTSTRAP */
+.container,
+.container-fluid {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+/* SEGURANÇA EXTRA */
+body {
+  overflow-x: hidden;
+  margin: 0;
+}
 #myCarousel {
   width: 100%;
   height: 500px; /* Ajuste a altura conforme necessário */

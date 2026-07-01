@@ -10,6 +10,8 @@ import CarrinhoProduto from '@/Views/CarrinhoProduto.vue'
 import EditarProduto from '../Views/EditarProduto.vue'
 /* Importa a View do CRM */
 import PainelCRM from '../Views/PainelCRM.vue'
+import GetPagamento from '../Views/GetPagamento.vue'
+
 
 
 
@@ -69,6 +71,13 @@ const routes = [
   component: PainelCRM,
   meta: { requerAutenticacao: true } /* Só logado acessa */
 },
+/* Adiciona no array routes */
+{
+  path: '/pagamento',
+  name: 'Pagamento',
+  component: GetPagamento,
+  meta: { requerAutenticacao: true }
+}
 
 ]
 

@@ -265,6 +265,10 @@ async adicionarAoCarrinho(USUARIO_EMAIL, PRODUTO_ID, QUANTIDADE) {
       throw error
     }
   },
+
+
+
+
   /* 
   Salva uma postagem com upload de imagem
   formData = objeto FormData com texto + arquivo
@@ -278,6 +282,29 @@ async salvarPostComImagem(formData) {
     return resposta.data
   } catch (error) {
     console.error('Erro ao salvar postagem com imagem:', error)
+    throw error
+  }
+},
+
+
+/* Envia o código de verificação para o e-mail */
+async enviarCodigoVerificacao(dados) {
+  try {
+    const resposta = await axios.post('http://localhost:3000/cadastro-verificacao', dados)
+    return resposta.data
+  } catch (error) {
+    console.error('Erro ao enviar código:', error)
+    throw error
+  }
+},
+
+/* Confirma o código digitado pelo usuário */
+async confirmarCodigo(EMAIL, CODIGO) {
+  try {
+    const resposta = await axios.post('http://localhost:3000/cadastro-confirmar', { EMAIL, CODIGO })
+    return resposta.data
+  } catch (error) {
+    console.error('Erro ao confirmar código:', error)
     throw error
   }
 },

@@ -151,13 +151,14 @@
               Botão finalizar — desabilitado se nenhum item selecionado
               :disabled impede o clique se não houver nada selecionado
             -->
-            <button
-              class="btn btn-success w-100 py-2 fw-bold"
-              @click="finalizarCompra"
-              :disabled="itensSelecionados.length === 0"
-            >
-              ✅ Finalizar Compra ({{ itensSelecionados.length }})
-            </button>
+            <!-- Botão vai para a tela de pagamento passando o valor total -->
+<button
+  class="btn btn-success w-100 py-2 fw-bold"
+  @click="router.push(`/pagamento?valor=${valorTotalSelecionados.toFixed(2)}`)"
+  :disabled="itensSelecionados.length === 0"
+>
+  💳 Ir para Pagamento ({{ itensSelecionados.length }})
+</button>
 
             <!-- Botão continuar comprando -->
             <router-link to="/" class="btn btn-outline-secondary w-100 mt-2">

@@ -49,60 +49,49 @@
   background-color: #d0e0ee !important;
  }
 </style>
+
 <script setup>
 import { ref } from 'vue'
-import { useRouter } from 'vue-router' // CORRIGIDO: 1. Importa o roteador do Vue
-// Importa o arquivo onde está o código da sua imagem (ajuste o caminho se necessário)
-import { ApiMeuBanco } from '../serviceApi/ApiMeuBanco.js' 
+import { useRouter } from 'vue-router'
+import { ApiMeuBanco } from '../serviceApi/ApiMeuBanco.js'
+import { useCarrinhoStore } from '../stores/carrinhoStore.js'
+/* ✅ Importa o UserStore */
+import { useUserStore } from '../stores/UserStore.js'
+
+const carrinhoStore = useCarrinhoStore()
+/* ✅ Inicializa o UserStore */
+const userStore = useUserStore()
 const email = ref('')
 const senha = ref('')
-const router = useRouter() // CORRIGIDO: 2. Ativa o roteador para poder usar o router.push
+const router = useRouter()
 
 async function efetuarLogin() {
-    try{
- // Chama o novo método passando os valores reativos das caixas de texto (.value)
-    const dadosUsuario = await ApiMeuBanco.login(email.value, senha.value);
-    
-    // Se chegou aqui sem cair no catch, as credenciais estão certas no banco!
-    
-    console.log('Dados recebidos do banco:', dadosUsuario);
+  try {
+    const dadosUsuario = await ApiMeuBanco.login(email.value, senha.value)
+    console.log('Dados recebidos do banco:', dadosUsuario)
 
-// CORREÇÃO: Como o banco devolve um Array, extraímos o primeiro objeto encontrado
-    // Se a resposta já for um objeto direto, o código também aceita perfeitamente
-    const usuarioLogado = Array.isArray(dadosUsuario) ? dadosUsuario[0] : dadosUsuario;
-   if (usuarioLogado) {
+    const usuarioLogado = Array.isArray(dadosUsuario) ? dadosUsuario[0] : dadosUsuario
 
-    // ==========================================
-    // 👉 O CÓDIGO ENTRA EXATAMENTE AQUI:
-    // ==========================================
-    // Salva o token no navegador para o roteador saber que ele está logado
-    localStorage.setItem('user_token', 'logado_com_sucesso')
-    
-    // Opcional: Salva os dados do próprio usuário para usar depois se quiser
-    localStorage.setItem('dados_usuario', JSON.stringify(usuarioLogado))
+    if (usuarioLogado) {
 
-    
-    // Busca o nome do banco em maiúsculo (NOME) ou minúsculo (nome) para saudar
-      const nomeExibição = usuarioLogado.NOME || usuarioLogado.nome || 'Usuário';
-      alert(`Login realizado com sucesso! Bem-vindo, ${nomeExibição}.`);
-    
-    
+      /* ✅ Salva no store — atualiza isAdmin automaticamente */
+      userStore.login(usuarioLogado)
+      localStorage.setItem('user_token', 'logado_com_sucesso')
 
-    
-   // 4. Redireciona o usuário para a página do Feed/Home
-      router.push('/') 
-}
- else {
-      alert('E-mail ou senha incorretos no banco de dados.');
+      /* ✅ Restaura o carrinho imediatamente após o login */
+      await carrinhoStore.restaurarCarrinho(usuarioLogado.EMAIL)
+
+      const nomeExibição = usuarioLogado.NOME || usuarioLogado.nome || 'Usuário'
+      alert(`Login realizado com sucesso! Bem-vindo, ${nomeExibição}.`)
+
+      router.push('/')
+
+    } else {
+      alert('E-mail ou senha incorretos no banco de dados.')
     }
+  } catch (erro) {
+    alert('Erro ao efetuar login: Credenciais inválidas.')
+    console.error('Erro detalhado no login:', erro)
   }
-  catch (erro) {
-    alert('Erro ao efetuar login: Credenciais inválidas.');
-    console.error('Erro detalhado no login:', erro);
-  }
-
-};
-
-
-
+}
 </script>
